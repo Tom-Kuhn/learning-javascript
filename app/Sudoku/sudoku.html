@@ -1,0 +1,16 @@
+﻿<div>
+    <div class="sudoku-puzzle-area center-block">
+        <table class="table table-bordered table-nonfluid">
+            <tr ng-repeat="row in range(9) track by $index" class="sudoku-row">
+                <td ng-repeat="cell in range(9) track by $index"
+                    class="sudoku-cell"
+                    ng-class="{'sudoku-column-highlight':isColumnSelected($index),
+		                    'sudoku-block':isCellShaded({{$parent.$index}}, {{$index}})}"
+                    ng-mouseover="setHoverColumn($index)"
+                    ng-mouseleave="setHoverColumn(-1)">
+                    <div ng-class="{'sudoku-puzzle-cell': isPuzzleNumber({{$parent.$index}}, {{$index}})}">{{getBoardValue($parent.$index,$index)}}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
