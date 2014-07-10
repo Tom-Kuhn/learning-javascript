@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-  <head>
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+ <!--<![endif]-->
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title></title>
@@ -12,49 +14,45 @@
 
     <!-- Javascript  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
-	    type="text/javascript" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"
+            type="text/javascript" charset="utf-8"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.14/angular.min.js"></script>
-    <script src="app/Sudoku/Sudoku.js"></script> 
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular-route.js"></script>
+
 
     <!-- CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/main.css">
-  </head>
-  <body ng-app> 
-    <!--[if lt IE 7]>
-	<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-	<![endif]-->
-    <div class="container" ng-controller="SudokuCtrl">
-      <div class="panel panel-info">
-	<div class="panel-heading">
-	  Welcome
-	</div>
-	<div class="panel-body">
-	  <div class="puzzle-area center-block">
-	    <table class="table table-bordered table-nonfluid">
-	      <tr ng-repeat="row in range(9) track by $index" class="sudoku-row">
-		<td ng-repeat="cell in range(9) track by $index"
-		    class="sudoku-cell"
-		    ng-class="{'sudoku-column-highlight':isColumnSelected($index), 
-		    'sudoku-block':isCellShaded({{$parent.$index}}, {{$index}})}"
-		    ng-mouseover="setHoverColumn($index)"
-		    ng-mouseleave="setHoverColumn(-1)"
-		    >
-		  <div ng-class="{'sudoku-puzzle-cell': isPuzzleNumber({{$parent.$index}}, {{$index}})}">{{getBoardValue($parent.$index,$index)}}</div>
-		</td>
-	      </tr> 
-	    </table>
-	  </div>
-	</div>
-      </div>
-      <hr>
 
-      <footer>
-        <p>&copy; Company 2014</p> 
-      </footer>
+    <!--<base href="/">-->
+</head>
+<body ng-app="learningJavascriptApp">
+    <!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="site-banner">
+                    Learning Javascript
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="ng-view"></div>
+        <hr>
+
+        <footer>
+            <p>&copy; Company 2014</p>
+        </footer>
     </div> <!-- /container -->
-  </body>
+
+
+    <script src="app/LearningJavascriptApp.js"></script>
+    <script src="app/Home/Home.js"></script>
+    <script src="app/Sudoku/Sudoku.js"></script>
+</body>
 </html>

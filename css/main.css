@@ -1,3 +1,28 @@
+header{
+    background-color:#1c1d21;
+}
+
+.site-banner{
+    font-family:"Lato",Helvetica, Arial, sans-serif;
+    font-size:42px;
+    font-weight:100;
+    text-align:center;
+
+    color:#FAFFFF;
+
+    margin-top:40px;
+    margin-bottom:40px;
+}
+
+body{
+    background-color:#FAFFFF;
+}
+
+
+
+/****************************************************************************************************************************
+/* SUDOKU styles
+/****************************************************************************************************************************/
 .table-bordered>tbody>tr>td.sudoku-cell{
     border-color: #1c1d21;
 }
@@ -6,15 +31,15 @@
     background-color:#dfedfe;
 }
 
-.puzzle-area{
+.sudoku-puzzle-area{
     display:block;
     text-align:center;
     vertical-align:middle;
     margin-left: auto;
     margin-right: auto;
     width:397px;
+    margin-top:20px;
 }
-
 
 .table-nonfluid {
     width: auto;
@@ -31,7 +56,7 @@
 
 /* Shows a cell that constitutes part of the original puzzle */
 .sudoku-puzzle-cell{
-    font-weight:900;
+    font-weight:700;
 }
 
 /* Background color for 3x3 block */
@@ -68,4 +93,9 @@
 .sudoku-block.sudoku-column-highlight{
     background-color:#FFB2B2;
 }
+
+
+/****************************************************************************************************************************
+/* End of SUDOKU styles
+/****************************************************************************************************************************/
 

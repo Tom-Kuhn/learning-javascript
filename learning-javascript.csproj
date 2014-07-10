@@ -65,6 +65,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\Home\home.html" />
+    <Content Include="app\Home\Home.js" />
+    <Content Include="app\LearningJavascriptApp.js" />
+    <Content Include="app\Sudoku\sudoku.html" />
     <Content Include="app\Sudoku\Sudoku.js" />
     <Content Include="css\bootstrap-theme.min.css" />
     <Content Include="css\main.css" />
