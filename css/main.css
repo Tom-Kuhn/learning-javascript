@@ -1,0 +1,71 @@
+.table-bordered>tbody>tr>td.sudoku-cell{
+    border-color: #1c1d21;
+}
+
+.table>tbody>tr>td.active{
+    background-color:#dfedfe;
+}
+
+.puzzle-area{
+    display:block;
+    text-align:center;
+    vertical-align:middle;
+    margin-left: auto;
+    margin-right: auto;
+    width:397px;
+}
+
+
+.table-nonfluid {
+    width: auto;
+}
+
+.sudoku-row>.sudoku-cell{
+    width:44px;
+    height:44px;
+    text-align:center;
+    vertical-align:middle;
+    font-size:large;
+    font-weight:300;
+}
+
+/* Shows a cell that constitutes part of the original puzzle */
+.sudoku-puzzle-cell{
+    font-weight:900;
+}
+
+/* Background color for 3x3 block */
+.sudoku-block{
+    background-color:#dee3e8;
+}
+
+/* Row hover in non-shaded block */
+.sudoku-row:hover{
+    background-color:#C5DDF9;
+}
+
+/* Row hover in sudoku block */
+.sudoku-row:hover .sudoku-block{
+    background-color:#9FC7F2;
+}
+
+/* Mix of row & col colors (non-shaded block) */
+.sudoku-cell:hover {
+    background-color:#E2E1EF;
+}
+
+/* Mix of row & col colors (shaded block) */
+.sudoku-row:hover .sudoku-block:hover{
+    background-color:#CFBDD2;
+}
+
+/* Col hover in non-shaded block */
+.sudoku-column-highlight{
+    background-color:#FFE5E5;
+}
+
+/* Col hover in sudoku block */
+.sudoku-block.sudoku-column-highlight{
+    background-color:#FFB2B2;
+}
+
