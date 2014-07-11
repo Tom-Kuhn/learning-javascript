@@ -73,13 +73,13 @@
          */
         $scope.isCellShaded = function (x, y) {
             // only the centre square should be filled in
-            if (isInCenterBlock(x)) {
+            if ($scope.isInCenterBlock(x)) {
                 // if both x & y are in the centre 1/3 of the board
-                return isInCenterBlock(y);
+                return $scope.isInCenterBlock(y);
             }
             else {
                 // only the first and last 1/3 should be shaded
-                return !isInCenterBlock(y);
+                return !$scope.isInCenterBlock(y);
             }
 
             return false;
@@ -88,7 +88,7 @@
         /*
          * Function to determine if co-ordinate is in the center 1/3 of the sudoku line
          */
-        var isInCenterBlock = function (x) {
+        $scope.isInCenterBlock = function (x) {
             if (x > 2 && x < 6) {
                 // If the number is in cell 3, 4, or 5 (zero based)
                 return true;

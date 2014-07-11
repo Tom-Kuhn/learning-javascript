@@ -14,6 +14,15 @@ header{
     margin-bottom:40px;
 }
 
+    .site-banner a {
+        color: #FAFFFF;
+        text-decoration:none;
+    }
+    .site-banner a:hover {
+        color: #FAFFFF;
+        text-decoration:none;
+    }
+
 body{
     background-color:#FAFFFF;
 }
@@ -51,6 +60,15 @@ body{
     text-align:center;
     vertical-align:middle;
     font-size:large;
+    font-weight:300;
+}
+
+.sudoku-row-mini>.sudoku-cell-mini{
+    width:24px;
+    height:24px;
+    text-align:center;
+    vertical-align:middle;
+    font-size:small;
     font-weight:300;
 }
 

@@ -12,6 +12,13 @@ learningJavascriptApp.config(function ($routeProvider) {
     .when('/Sudoku', {
         templateUrl: 'app/Sudoku/sudoku.html',
         controller: 'SudokuCtrl',
+        caseInsensitiveMatch: true
+    })
+
+    .when('/Sudoku/Test', {
+        templateUrl: 'app/Sudoku/sudoku-test.html',
+        controller: 'SudokuTestCtrl',
+        caseInsensitiveMatch: true
     });
 
     // use the HTML5 History API
