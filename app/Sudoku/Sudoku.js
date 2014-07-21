@@ -13,6 +13,18 @@
         [, , , , , , , , ]
         ];
 
+        $scope.markings = [
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ]
+        ];
+
         $scope.puzzle = [
         [4, , , , , , 8, , 5],
         [, 3, , , , , , , ],
@@ -29,10 +41,20 @@
 
         $scope.selectedCell = null;
 
+        $scope.MarkupCells = false;
+
+        $scope.ToggleCellMarkup = function () {
+            $scope.MarkupCells = !$scope.MarkupCells;
+        };
+
         /*
          * Function to get a range of numbers for angular
          */
         $scope.range = function (x) {
+            if (x < 0) {
+                return new Array(0);
+            };
+
             return new Array(x);
         };
 
@@ -40,10 +62,22 @@
          * Function to get a board value based on user input and the puzzle
          */
         $scope.getBoardValue = function (x, y) {
+            // Show the puzzle value
             var result = $scope.puzzle[x][y];
 
+            // If no puzzle value, show any entries by the user
             if (!result) {
                 result = $scope.board[x][y];
+            };
+
+            // If no entries by the user, show any user markings
+            if (!result) {
+
+                if ($scope.markings[x][y] == null) {
+                    return '';
+                };
+
+                result = $scope.markings[x][y].sort().join(' ');
             };
 
             return result;
@@ -52,7 +86,7 @@
         /*
          * Sets the Selected Cell value on the board
          */
-        $scope.SetSelectedCellValue = function (value){
+        $scope.SetSelectedCellValue = function (value) {
             if ($scope.selectedCell == null) {
                 // No cell has been selected
                 return;
@@ -60,6 +94,25 @@
 
             var x = $scope.selectedCell[0];
             var y = $scope.selectedCell[1];
+
+            if ($scope.MarkupCells) {
+                // If we don't have any markings for the cell OR, are clearing the cell of markings
+                if ($scope.markings[x][y] == null || value == null) {
+                    $scope.markings[x][y] = [value];
+                    return;
+                }
+
+                // If have the value in the markings, remove it                
+                var index = $.inArray(value, $scope.markings[x][y]);
+                if (index > -1) {
+                    $scope.markings[x][y].splice(index, 1);
+                    return;
+                }
+
+                // Add the markup to the cells
+                $scope.markings[x][y].push(value);
+                return;
+            };
 
             $scope.board[x][y] = value;
         };
@@ -69,6 +122,13 @@
          */
         $scope.isPuzzleNumber = function (x, y) {
             return !($scope.puzzle[x][y] == null);
+        };
+
+        /*
+         * Determine whether a board position was part of the original puzzle
+         */
+        $scope.isMarkingNumber = function (x, y) {
+            return !$scope.isPuzzleNumber(x, y) && !$scope.board[x][y] && $scope.markings[x][y];
         };
 
         /*
@@ -118,9 +178,9 @@
          * Function to determine if a sudoku cell should be shaded
          */
         $scope.isCellShaded = function (x, y) {
-            // only the centre square should be filled in
+            // only the center square should be filled in
             if ($scope.isInCenterBlock(x)) {
-                // if both x & y are in the centre 1/3 of the board
+                // if both x & y are in the center 1/3 of the board
                 return $scope.isInCenterBlock(y);
             }
             else {

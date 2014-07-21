@@ -27,6 +27,12 @@ body{
     background-color:#FAFFFF;
 }
 
+.top-buffer { margin-top:20px; }
+
+small, sub, sup { font-size: .6em }
+sub             { vertical-align: sub }
+sup             { vertical-align: super }
+
 .row-centered {
     text-align:center;
 }
@@ -64,6 +70,12 @@ body{
 
 .table-nonfluid {
     width: auto;
+}
+
+.sudoku-row >.sudoku-cell> .sudoku-markings {
+     font-size: .6em;
+     vertical-align:super;
+     line-height:.8em;
 }
 
 .sudoku-row>.sudoku-cell{

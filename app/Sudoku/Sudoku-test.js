@@ -3,6 +3,15 @@
 
     function sudokuTestController($scope, $controller, $injector) {
 
+        QUnit.test("Does the range function work as expected?", function (assert) {
+            var _targetScope = {};
+            _target = $controller('SudokuCtrl', { $scope: _targetScope });
+
+            assert.deepEqual(_targetScope.range(6), new Array(6), "Passed! range 6 equals new Array(6)");
+            assert.deepEqual(_targetScope.range(0), new Array(0), "Passed! range 0 equals new Array(0)");
+            assert.deepEqual(_targetScope.range(-1), new Array(0), "Passed! range -1 returns new Array(0)");
+        });
+
         QUnit.test("Is the column in the hover state?", function (assert) {
             var _targetScope = {};
             _target = $controller('SudokuCtrl', { $scope: _targetScope });
