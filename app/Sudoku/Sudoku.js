@@ -2,7 +2,7 @@
 
     function sudokuController($scope) {
         $scope.board = [
-        [, 999, , , , , , , ],
+        [, , , , , , , , ],
         [, , , , , , , , ],
         [, , , , , , , , ],
         [, , , , , , , , ],
@@ -27,6 +27,8 @@
 
         $scope.hoverColumn = -1;
 
+        $scope.selectedCell = null;
+
         /*
          * Function to get a range of numbers for angular
          */
@@ -48,6 +50,21 @@
         };
 
         /*
+         * Sets the Selected Cell value on the board
+         */
+        $scope.SetSelectedCellValue = function (value){
+            if ($scope.selectedCell == null) {
+                // No cell has been selected
+                return;
+            };
+
+            var x = $scope.selectedCell[0];
+            var y = $scope.selectedCell[1];
+
+            $scope.board[x][y] = value;
+        };
+
+        /*
          * Determine whether a board position was part of the original puzzle
          */
         $scope.isPuzzleNumber = function (x, y) {
@@ -59,6 +76,35 @@
          */
         $scope.setHoverColumn = function (x) {
             $scope.hoverColumn = x;
+        };
+
+        /*
+         * Sets the Selected Cell field
+         */
+        $scope.setSelectedCell = function (x, y) {
+            if ($scope.isPuzzleNumber(x, y)) {
+                // Can't select a puzzle number cell
+                return;
+            };
+
+            $scope.selectedCell = [x, y];
+        };
+
+        /*
+         * Determines if the cell at co-ordinates (x,y) has been selected by the user
+         */
+        $scope.isCellSelected = function (x, y) {
+            if ($scope.selectedCell == null) {
+                // No cell has been selected
+                return false;
+            };
+
+            if ($scope.selectedCell[0] == x && $scope.selectedCell[1] == y) {
+                // The cell is selected!
+                return true;
+            }
+
+            return false;
         };
 
         /*
