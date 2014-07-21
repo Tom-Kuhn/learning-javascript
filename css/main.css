@@ -75,6 +75,7 @@ body{
 /* Shows a cell that constitutes part of the original puzzle */
 .sudoku-puzzle-cell{
     font-weight:700;
+    color:#18bc9c;
 }
 
 /* Background color for 3x3 block */
