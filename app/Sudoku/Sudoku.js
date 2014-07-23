@@ -1,6 +1,7 @@
 (function () {
 
     function sudokuController($scope) {
+        // Stores the values entered by the user
         $scope.board = [
         [, , , , , , , , ],
         [, , , , , , , , ],
@@ -13,6 +14,7 @@
         [, , , , , , , , ]
         ];
 
+        // Stores up any markup entered by the user
         $scope.markings = [
         [, , , , , , , , ],
         [, , , , , , , , ],
@@ -115,6 +117,38 @@
             };
 
             $scope.board[x][y] = value;
+        };
+
+        /*
+         * Handles keyboard input to enter values on the board
+         */
+        $scope.handleKeyboardEntry = function ($event) {
+            // If a number has been pressed
+            if ($event.keyCode > 48 && $event.keyCode < 58) {
+                $scope.SetSelectedCellValue($event.keyCode - 48);
+            };
+        };
+
+        /*
+         * Handles the request to toggle on/off the board markup
+         */
+        $scope.handleKeyboardKeyDown = function ($event) {
+            // If Control has been pressed to toggle markup
+            if ($event.keyCode == 17) {
+                $scope.ToggleCellMarkup();
+                return;
+            };
+
+
+            // If the cell should be deleted
+            if ($event.keyCode == 46 || $event.keyCode == 8) {
+                $scope.SetSelectedCellValue(null);
+
+                // Stop the page from navigating backwards
+                if ($event.keyCode == 8) {
+                    $event.preventDefault();
+                };
+            };
         };
 
         /*

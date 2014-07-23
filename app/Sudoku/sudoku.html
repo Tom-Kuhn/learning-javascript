@@ -3,8 +3,11 @@
         <table class="table table-bordered table-nonfluid">
             <tr ng-repeat="row in range(9) track by $index" class="sudoku-row">
                 <td ng-repeat="cell in range(9) track by $index"
+                    tabindex="0"
                     class="sudoku-cell"
                     ng-click="setSelectedCell($parent.$index, $index)"
+                    ng-keypress="handleKeyboardEntry($event)"
+                    ng-keydown="handleKeyboardKeyDown($event)"
                     ng-class="{'sudoku-column-highlight':isColumnSelected($index),
 		                    'sudoku-block':isCellShaded({{$parent.$index}}, {{$index}}),
                             'sudoku-selected-cell':isCellSelected({{$parent.$index}}, {{$index}})}"
