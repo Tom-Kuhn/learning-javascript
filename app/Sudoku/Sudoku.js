@@ -1,243 +1,363 @@
-(function () {
+(function() {
 
-    function sudokuController($scope) {
-        // Stores the values entered by the user
-        $scope.board = [
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ]
-        ];
+  function sudokuController($scope, SudokuPuzzleService) {
+    // Stores the values entered by the user
+    $scope.board = [
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ]
+    ];
 
-        // Stores up any markup entered by the user
-        $scope.markings = [
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ],
-        [, , , , , , , , ]
-        ];
+    // Stores up any markup entered by the user
+    $scope.markings = [
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ],
+      [, , , , , , , , ]
+    ];
 
-        $scope.puzzle = [
-        [4, , , , , , 8, , 5],
-        [, 3, , , , , , , ],
-        [, , , 7, , , , , ],
-        [, 2, , , , , , 6, ],
-        [, , , , 8, , 4, , ],
-        [, , , , 1, , , , ],
-        [, , , 6, , 3, , 7, ],
-        [5, , , 2, , , , , ],
-        [1, , 4, , , , , , ]
-        ];
+    $scope.puzzle = [
+      [4, , , , , , 8, , 5],
+      [, 3, , , , , , , ],
+      [, , , 7, , , , , ],
+      [, 2, , , , , , 6, ],
+      [, , , , 8, , 4, , ],
+      [, , , , 1, , , , ], 
+      [, , , 6, , 3, , 7, ],
+      [5, , , 2, , , , , ],
+      [1, , 4, , , , , , ]
+    ];
 
-        $scope.hoverColumn = -1;
+    //$scope.puzzle = SudokuPuzzleService.NewPuzzle(10,10);
 
-        $scope.selectedCell = null;
+    $scope.hoverColumn = -1;
 
-        $scope.MarkupCells = false;
+    $scope.selectedCell = null;
 
-        $scope.ToggleCellMarkup = function () {
-            $scope.MarkupCells = !$scope.MarkupCells;
+    $scope.MarkupCells = false;
+
+    $scope.ToggleCellMarkup = function () {
+      $scope.MarkupCells = !$scope.MarkupCells;
+    };
+
+    /*
+     * Function to get a range of numbers for angular
+     */
+    $scope.range = function (x) {
+      if (x < 0) {
+        return new Array(0);
+      };
+
+      return new Array(x);
+    };
+
+    /*
+     * Function to get a board value based on user input and the puzzle
+     */
+    $scope.getBoardValue = function (x, y) {
+      // Show the puzzle value
+      var result = $scope.puzzle[x][y];
+
+      // If no puzzle value, show any entries by the user
+      if (!result) {
+        result = $scope.board[x][y];
+      };
+
+      // If no entries by the user, show any user markings
+      if (!result) {
+
+        if ($scope.markings[x][y] == null) {
+          return '';
         };
 
-        /*
-         * Function to get a range of numbers for angular
-         */
-        $scope.range = function (x) {
-            if (x < 0) {
-                return new Array(0);
-            };
+        result = $scope.markings[x][y].sort().join(' ');
+      };
 
-            return new Array(x);
+      return result;
+    };
+
+    /*
+     * Sets the Selected Cell value on the board
+     */
+    $scope.SetSelectedCellValue = function (value) {
+      if ($scope.selectedCell == null) {
+        // No cell has been selected
+        return;
+      };
+
+      var x = $scope.selectedCell[0];
+      var y = $scope.selectedCell[1];
+
+      if ($scope.MarkupCells) {
+        // If we don't have any markings for the cell OR, are clearing the cell of markings
+        if ($scope.markings[x][y] == null || value == null) {
+          $scope.markings[x][y] = [value];
+          return;
+        }
+
+        // If have the value in the markings, remove it                
+        var index = $.inArray(value, $scope.markings[x][y]);
+        if (index > -1) {
+          $scope.markings[x][y].splice(index, 1);
+          return;
+        }
+
+        // Add the markup to the cells
+        $scope.markings[x][y].push(value);
+        return;
+      };
+
+      $scope.board[x][y] = value;
+    };
+
+    /*
+     * Handles keyboard input to enter values on the board
+     */
+    $scope.handleKeyboardEntry = function ($event) {
+      // If a number has been pressed
+      if ($event.keyCode > 48 && $event.keyCode < 58) {
+        $scope.SetSelectedCellValue($event.keyCode - 48);
+      };
+    };
+
+    /*
+     * Handles the request to toggle on/off the board markup
+     */
+    $scope.handleKeyboardKeyDown = function ($event) {
+      // If Control has been pressed to toggle markup
+      if ($event.keyCode == 17) {
+        $scope.ToggleCellMarkup();
+        return;
+      };
+
+
+      // If the cell should be deleted
+      if ($event.keyCode == 46 || $event.keyCode == 8) {
+        $scope.SetSelectedCellValue(null);
+
+        // Stop the page from navigating backwards
+        if ($event.keyCode == 8) {
+          $event.preventDefault();
         };
+      };
+    };
 
-        /*
-         * Function to get a board value based on user input and the puzzle
-         */
-        $scope.getBoardValue = function (x, y) {
-            // Show the puzzle value
-            var result = $scope.puzzle[x][y];
+    /*
+     * Determine whether a board position was part of the original puzzle
+     */
+    $scope.isPuzzleNumber = function (x, y) {
+      return !($scope.puzzle[x][y] == null);
+    };
 
-            // If no puzzle value, show any entries by the user
-            if (!result) {
-                result = $scope.board[x][y];
-            };
+    /*
+     * Determine whether a board position was part of the original puzzle
+     */
+    $scope.isMarkingNumber = function (x, y) {
+      return !$scope.isPuzzleNumber(x, y) && !$scope.board[x][y] && $scope.markings[x][y];
+    };
 
-            // If no entries by the user, show any user markings
-            if (!result) {
+    /*
+     * Sets the HoverColumn field
+     */
+    $scope.setHoverColumn = function (x) {
+      $scope.hoverColumn = x;
+    };
 
-                if ($scope.markings[x][y] == null) {
-                    return '';
-                };
+    /*
+     * Sets the Selected Cell field
+     */
+    $scope.setSelectedCell = function (x, y) {
+      if ($scope.isPuzzleNumber(x, y)) {
+        // Can't select a puzzle number cell
+        return;
+      };
 
-                result = $scope.markings[x][y].sort().join(' ');
-            };
+      $scope.selectedCell = [x, y];
+    };
 
-            return result;
-        };
+    /*
+     * Determines if the cell at co-ordinates (x,y) has been selected by the user
+     */
+    $scope.isCellSelected = function (x, y) {
+      if ($scope.selectedCell == null) {
+        // No cell has been selected
+        return false;
+      };
 
-        /*
-         * Sets the Selected Cell value on the board
-         */
-        $scope.SetSelectedCellValue = function (value) {
-            if ($scope.selectedCell == null) {
-                // No cell has been selected
-                return;
-            };
+      if ($scope.selectedCell[0] == x && $scope.selectedCell[1] == y) {
+        // The cell is selected!
+        return true;
+      }
 
-            var x = $scope.selectedCell[0];
-            var y = $scope.selectedCell[1];
+      return false;
+    };
 
-            if ($scope.MarkupCells) {
-                // If we don't have any markings for the cell OR, are clearing the cell of markings
-                if ($scope.markings[x][y] == null || value == null) {
-                    $scope.markings[x][y] = [value];
-                    return;
-                }
+    /*
+     * Determines if the specified column should be in the hover state
+     */
+    $scope.isColumnSelected = function (colIndex) {
+      return $scope.hoverColumn == colIndex;
+    };
 
-                // If have the value in the markings, remove it                
-                var index = $.inArray(value, $scope.markings[x][y]);
-                if (index > -1) {
-                    $scope.markings[x][y].splice(index, 1);
-                    return;
-                }
+    /*
+     * Function to determine if a sudoku cell should be shaded
+     */
+    $scope.isCellShaded = function (x, y) {
+      // only the center square should be filled in
+      if ($scope.isInCenterBlock(x)) {
+        // if both x & y are in the center 1/3 of the board
+        return $scope.isInCenterBlock(y);
+      }
+      else {
+        // only the first and last 1/3 should be shaded
+        return !$scope.isInCenterBlock(y);
+      }
 
-                // Add the markup to the cells
-                $scope.markings[x][y].push(value);
-                return;
-            };
+      return false;
+    };
 
-            $scope.board[x][y] = value;
-        };
+    /*
+     * Function to determine if co-ordinate is in the center 1/3 of the sudoku line
+     */
+    $scope.isInCenterBlock = function (x) {
+      if (x > 2 && x < 6) {
+        // If the number is in cell 3, 4, or 5 (zero based)
+        return true;
+      }
+      return false;
+    };
+  }
 
-        /*
-         * Handles keyboard input to enter values on the board
-         */
-        $scope.handleKeyboardEntry = function ($event) {
-            // If a number has been pressed
-            if ($event.keyCode > 48 && $event.keyCode < 58) {
-                $scope.SetSelectedCellValue($event.keyCode - 48);
-            };
-        };
+  function sudokuPuzzleService(){
 
-        /*
-         * Handles the request to toggle on/off the board markup
-         */
-        $scope.handleKeyboardKeyDown = function ($event) {
-            // If Control has been pressed to toggle markup
-            if ($event.keyCode == 17) {
-                $scope.ToggleCellMarkup();
-                return;
-            };
+    var m_w = 123456789;
+    var m_z = 987654321;
+    var mask = 0xffffffff;
 
-
-            // If the cell should be deleted
-            if ($event.keyCode == 46 || $event.keyCode == 8) {
-                $scope.SetSelectedCellValue(null);
-
-                // Stop the page from navigating backwards
-                if ($event.keyCode == 8) {
-                    $event.preventDefault();
-                };
-            };
-        };
-
-        /*
-         * Determine whether a board position was part of the original puzzle
-         */
-        $scope.isPuzzleNumber = function (x, y) {
-            return !($scope.puzzle[x][y] == null);
-        };
-
-        /*
-         * Determine whether a board position was part of the original puzzle
-         */
-        $scope.isMarkingNumber = function (x, y) {
-            return !$scope.isPuzzleNumber(x, y) && !$scope.board[x][y] && $scope.markings[x][y];
-        };
-
-        /*
-         * Sets the HoverColumn field
-         */
-        $scope.setHoverColumn = function (x) {
-            $scope.hoverColumn = x;
-        };
-
-        /*
-         * Sets the Selected Cell field
-         */
-        $scope.setSelectedCell = function (x, y) {
-            if ($scope.isPuzzleNumber(x, y)) {
-                // Can't select a puzzle number cell
-                return;
-            };
-
-            $scope.selectedCell = [x, y];
-        };
-
-        /*
-         * Determines if the cell at co-ordinates (x,y) has been selected by the user
-         */
-        $scope.isCellSelected = function (x, y) {
-            if ($scope.selectedCell == null) {
-                // No cell has been selected
-                return false;
-            };
-
-            if ($scope.selectedCell[0] == x && $scope.selectedCell[1] == y) {
-                // The cell is selected!
-                return true;
-            }
-
-            return false;
-        };
-
-        /*
-         * Determines if the specified column should be in the hover state
-         */
-        $scope.isColumnSelected = function (colIndex) {
-            return $scope.hoverColumn == colIndex;
-        };
-
-        /*
-         * Function to determine if a sudoku cell should be shaded
-         */
-        $scope.isCellShaded = function (x, y) {
-            // only the center square should be filled in
-            if ($scope.isInCenterBlock(x)) {
-                // if both x & y are in the center 1/3 of the board
-                return $scope.isInCenterBlock(y);
-            }
-            else {
-                // only the first and last 1/3 should be shaded
-                return !$scope.isInCenterBlock(y);
-            }
-
-            return false;
-        };
-
-        /*
-         * Function to determine if co-ordinate is in the center 1/3 of the sudoku line
-         */
-        $scope.isInCenterBlock = function (x) {
-            if (x > 2 && x < 6) {
-                // If the number is in cell 3, 4, or 5 (zero based)
-                return true;
-            }
-            return false;
-        };
+    // Takes any integer
+    function setSeed(i) {
+      m_w = i;
     }
 
-    learningJavascriptApp.controller('SudokuCtrl', sudokuController);
+    // Returns number between 0 (inclusive) and 1.0 (exclusive),
+    // just like Math.random().
+    function random()
+    {
+      m_z = (36969 * (m_z & 65535) + (m_z >> 16)) & mask;
+      m_w = (18000 * (m_w & 65535) + (m_w >> 16)) & mask;
+      var result = ((m_z << 16) + m_w) & mask;
+      result /= 4294967296;
+      return result + 0.5;
+    }
+
+    // Returns a random integer between min (included) and max (excluded)
+    // Using Math.round() will give you a non-uniform distribution!
+    function getRandomInt(min, max) {
+      return Math.floor(random() * (max - min)) + min;
+    }
+
+    function getValidPuzzleTargetSwapIndex (puzzleSourceIndex){
+      var puzzleBlockIndex = puzzleSourceIndex % 3;
+      var result = puzzleBlockIndex;
+
+      while(result == puzzleBlockIndex)
+      {
+        result = getRandomInt(0,2);
+      }
+
+      result = (puzzleSourceIndex - puzzleBlockIndex) + result;
+      return result;
+    };
+
+    function swapBlock(puzzle, isColumn){
+      
+      var sourceBlock = getRandomInt(0,2);
+      var targetBlock = getValidPuzzleTargetSwapIndex(sourceBlock);
+
+      if(isColumn){
+        swapColumn(puzzle, (sourceBlock * 3),  (targetBlock * 3));
+        swapColumn(puzzle, (sourceBlock * 3) + 1,  (targetBlock * 3) + 1);
+        swapColumn(puzzle, (sourceBlock * 3) + 2,  (targetBlock * 3) + 2);
+      }
+      else{
+        swapRow(puzzle, (sourceBlock * 3),  (targetBlock * 3));
+        swapRow(puzzle, (sourceBlock * 3) + 1,  (targetBlock * 3) + 1);
+        swapRow(puzzle, (sourceBlock * 3) + 2,  (targetBlock * 3) + 2);
+      }
+    };
+
+    function swapRow(puzzle, sourceIndex, targetIndex){
+
+      var temp = puzzle[sourceIndex];
+      puzzle[sourceIndex] = puzzle[targetIndex];
+      puzzle[targetIndex] = temp;
+      
+    };
+
+    function swapColumn(puzzle, sourceIndex, targetIndex){
+      for(var j = 0; j < 9; j++){
+        var buffer = puzzle[j][sourceIndex];
+        puzzle[j][sourceIndex] = puzzle[j][targetIndex];
+        puzzle[j][targetIndex] = buffer;
+      };
+    };
+
+    this.NewPuzzle = function(seed, difficulty){
+      setSeed(seed);
+
+      initialPuzzle = [
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [4, 5, 6, 7, 8, 9, 1, 2, 3],
+        [7, 8, 9, 1, 2, 3, 4, 5, 6],
+        [2, 1, 4, 3, 6, 5, 8, 9, 7],
+        [3, 6, 5, 8, 9, 7, 2, 1, 4],
+        [8, 9, 7, 2, 1, 4, 3, 6, 5],
+        [5, 3, 1, 6, 4, 2, 9, 7, 8],
+        [6, 4, 2, 9, 7, 8, 5, 3, 1],
+        [9, 7, 8, 5, 3, 1, 6, 4, 2]
+      ];
+      
+      var maxGenerations  = getRandomInt(150,500);
+
+      for(var i = 0; i < maxGenerations; i++){
+        var transformOption = getRandomInt(0,4);
+
+        var sourceIndex = getRandomInt(0,8);
+        var targetIndex = getValidPuzzleTargetSwapIndex(sourceIndex);
+
+        switch(transformOption){
+        case 0 :
+          swapRow(initialPuzzle,sourceIndex, targetIndex);          
+          break;
+        case 1 :
+          swapColumn(initialPuzzle,sourceIndex, targetIndex);          
+          break;
+        case 2:
+          swapBlock(initialPuzzle, true);
+          break;
+        case 3:
+          swapBlock(initialPuzzle, false);
+          break;
+        };
+      };
+
+      return initialPuzzle;
+    };
+  };
+
+  learningJavascriptApp.service('SudokuPuzzleService', sudokuPuzzleService);
+  learningJavascriptApp.controller('SudokuCtrl', sudokuController);
 })();
 
 
