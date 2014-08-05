@@ -24,8 +24,8 @@
       </div>
     </div>
   </div>
-  <div class="sudoku-puzzle-area center-block">
-    
+
+  <div class="sudoku-puzzle-area center-block">    
     <table class="table table-bordered table-nonfluid">
       <tr ng-repeat="row in range(9) track by $index" class="sudoku-row">
         <td ng-repeat="cell in range(9) track by $index"
@@ -43,6 +43,15 @@
       </td>
     </tr>
   </table>
+</div>
+
+<div class="panel panel-success" ng-if="completed">
+  <div class="panel-heading">
+    <h3 class="panel-title">Congratulations!</h3>
+  </div>
+  <div class="panel-body">
+    You've successfully completed this puzzle in x. Would you like to play again?
+  </div>
 </div>
 
 <div class="row">
