@@ -11,6 +11,8 @@
     $scope.selectedCell = null;
     $scope.MarkupCells = false;
     $scope.completed = false;
+    $scope.completionTimeMinutes = 0;
+    $scope.startTime = new Date();
 
     /*
      * Initialises the board variables to be empty
@@ -67,6 +69,7 @@
       ];
 
       $scope.completed = false;
+      $scope.startTime = new Date();
     };
 
     /*
@@ -144,6 +147,13 @@
       };
       
       $scope.completed = true;
+      
+      var completionTime = new Date();
+      var milliseconds = (completionTime - $scope.startTime);
+      var seconds = milliseconds / 1000;
+
+      // Get completion time to nearest 1 decimal place
+       $scope.completionTimeMinutes = Math.round(seconds / 6) / 10;
     };
 
     /*

@@ -1,7 +1,29 @@
 ﻿<div>
   <div class="row-centered">
     <h1>Sudoku</h1>  
-    Difficulty: {{puzzleDifficulty}}
+  </div>
+
+  <div>
+    <p>
+      <strong>Rules:</strong><br />
+      The objective is to fill a 9×9 grid with digits so that each
+      column, each row, and each of the nine 3×3 sub-grids that 
+      compose the grid contains all of the digits from 1 to 9. (<a
+        href="http://en.wikipedia.org/wiki/Sudoku">Wikipedia</a>)
+    </p>
+
+    <p>
+      <strong>How to play:</strong><br />
+      To enter numbers into the puzzle board below, simply select the
+      cell you want to edit and then type the number (1-9 inclusive)
+      that you want to place. Alternatively, you can use the numbered
+      buttons provided below the board to enter the desired value. To
+      remove a number, simply click on the red cross button or press the
+      <span class="badge">Delete</span> key or the  <span class="badge">Backspace</span> key.
+    </p>
+  </div>
+
+  <div class="row-centered">
     <div class="row">
       <div class="col-md-2 col-sm-12 col-md-offset-2 ">
         <div class="btn btn-success full-width-button top-buffer-small"
@@ -23,15 +45,19 @@
           game</div>
       </div>
     </div>
+    
+    <p class="top-buffer-small">
+      Current difficulty: {{puzzleDifficulty}}
+    </p>
   </div>
 
   <div class="sudoku-puzzle-area center-block">    
     <table class="table table-bordered table-nonfluid">
       <tr ng-repeat="row in range(9) track by $index" class="sudoku-row">
         <td ng-repeat="cell in range(9) track by $index"
-          tabindex="0"
-          class="sudoku-cell"
-          ng-click="setSelectedCell($parent.$index, $index)"
+            tabindex="0"
+            class="sudoku-cell"
+            ng-click="setSelectedCell($parent.$index, $index)"
           ng-keypress="handleKeyboardEntry($event)"
           ng-keydown="handleKeyboardKeyDown($event)"
           ng-class="{'sudoku-column-highlight':isColumnSelected($index),
@@ -50,7 +76,8 @@
     <h3 class="panel-title">Congratulations!</h3>
   </div>
   <div class="panel-body">
-    You've successfully completed this puzzle in x. Would you like to play again?
+    You've successfully completed this puzzle in
+  {{completionTimeMinutes}} minute(s)! Would you like to play again?
   </div>
 </div>
 
