@@ -87,9 +87,13 @@
         </div>
     </div>
     <div class="row top-buffer">
-        <div class="col-xs-2 col-xs-offset-1">
-            <div class="btn btn-primary" ng-click="ToggleCellMarkup()" ng-class="{'btn-success active':MarkupCells}"><i class="fa fa-pencil" ng-if="MarkupCells"></i> Markup cells</div>
-        </div>
+      <div class="col-xs-2 col-xs-offset-1">
+        <div class="btn btn-primary" ng-click="ToggleCellMarkup()" ng-class="{'btn-success active':MarkupCells}"><i class="fa fa-pencil" ng-if="MarkupCells"></i> Markup cells</div>
+      </div>
+      <div class="col-xs-2 col-xs-offset-7">
+        <div class="btn btn-primary" ng-click="AddHint()"><i
+          class="fa fa-question"></i> Need a Hint</div>
+      </div>
     </div>
     <hr />
     <h5><a href="#/sudoku/test">Unit tests for the Sudoku example</a></h5>

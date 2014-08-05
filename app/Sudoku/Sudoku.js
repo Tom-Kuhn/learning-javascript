@@ -106,17 +106,6 @@
     };
 
     /*
-     * Function to get a range of numbers for angular
-     */
-    $scope.range = function (x) {
-      if (x < 0) {
-        return new Array(0);
-      };
-
-      return new Array(x);
-    };
-
-    /*
      * Function to get a board value based on user input and the puzzle
      */
     $scope.getBoardValue = function (x, y) {
@@ -148,13 +137,48 @@
     $scope.CheckBoardForCompletion = function(){
       for(var i = 0; i < 9; i++){
         for(var j = 0; j < 9; j++){
-          if(!$scope.GetBoardValue(i,j)){
+          if(!$scope.getBoardValue(i,j)){
             return;
           }
         };
       };
       
       $scope.completed = true;
+    };
+
+    /*
+     * Add a hint to the board
+     */
+    $scope.AddHint = function(){
+      var availableHints = [];
+
+      for(var i = 0; i < 9; i++){
+        for(var j = 0; j < 9; j++){
+          if($scope.getBoardValue(i,j) == ""){
+            availableHints.push({x: i, y: j});
+          }
+        };
+      };
+
+      if(availableHints.length > 0){
+        var rand = RandomNumberService.GetRandomInt(0, availableHints.length - 1);
+        var hint = availableHints[rand];
+
+        $scope.board[hint.x][hint.y] = $scope.solution[hint.x][hint.y];
+
+        $scope.CheckBoardForCompletion();
+      };        
+    };
+
+    /*
+     * Function to get a range of numbers for angular
+     */
+    $scope.range = function (x) {
+      if (x < 0) {
+        return new Array(0);
+      };
+
+      return new Array(x);
     };
  
     /*
@@ -213,7 +237,7 @@
 
     /*
      * Handles the request to toggle on/off the board markup
-     */
+     */ 
     $scope.handleKeyboardKeyDown = function ($event) {
       var value = $event.keyCode;
       
