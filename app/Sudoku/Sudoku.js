@@ -39,7 +39,9 @@
       [1, , 4, , , , , , ]
     ];
 
-    //$scope.puzzle = SudokuPuzzleService.NewPuzzle(10,10);
+    $scope.puzzleNumber =  Math.floor(Math.random() * (65535 - 1)) + 1;
+
+   // $scope.puzzle = SudokuPuzzleService.NewPuzzle( $scope.puzzleNumber,10);
 
     $scope.hoverColumn = -1;
 
@@ -239,21 +241,27 @@
     };
   }
 
-  function sudokuPuzzleService(){
+  function randomNumberService(){
 
     var m_w = 123456789;
     var m_z = 987654321;
     var mask = 0xffffffff;
 
     // Takes any integer
-    function setSeed(i) {
+    this.SetSeed = function(i) {
       m_w = i;
     }
 
     // Returns number between 0 (inclusive) and 1.0 (exclusive),
     // just like Math.random().
-    function random()
+    this.Random = function(useMathRandom)
     {
+      useMathRandom = useMathRandom || false;
+
+      if(useMathRandom){
+        return Math.random();
+      };
+
       m_z = (36969 * (m_z & 65535) + (m_z >> 16)) & mask;
       m_w = (18000 * (m_w & 65535) + (m_w >> 16)) & mask;
       var result = ((m_z << 16) + m_w) & mask;
@@ -263,17 +271,19 @@
 
     // Returns a random integer between min (included) and max (excluded)
     // Using Math.round() will give you a non-uniform distribution!
-    function getRandomInt(min, max) {
-      return Math.floor(random() * (max - min)) + min;
-    }
+    this.GetRandomInt = function(min, max) {
+      return Math.floor(this.Random() * (max - min)) + min;
+    }  
+  };
 
+  function sudokuPuzzleService(RandomNumberService){
     function getValidPuzzleTargetSwapIndex (puzzleSourceIndex){
       var puzzleBlockIndex = puzzleSourceIndex % 3;
       var result = puzzleBlockIndex;
 
       while(result == puzzleBlockIndex)
       {
-        result = getRandomInt(0,2);
+        result = RandomNumberService.GetRandomInt(0,2);
       }
 
       result = (puzzleSourceIndex - puzzleBlockIndex) + result;
@@ -282,7 +292,7 @@
 
     function swapBlock(puzzle, isColumn){
       
-      var sourceBlock = getRandomInt(0,2);
+      var sourceBlock = RandomNumberService.GetRandomInt(0,2);
       var targetBlock = getValidPuzzleTargetSwapIndex(sourceBlock);
 
       if(isColumn){
@@ -297,7 +307,9 @@
       }
     };
 
-    function swapRow(puzzle, sourceIndex, targetIndex){
+    function swapRow(puzzle){
+      var sourceIndex = RandomNumberService.GetRandomInt(0,8);
+      var targetIndex = getValidPuzzleTargetSwapIndex(sourceIndex);
 
       var temp = puzzle[sourceIndex];
       puzzle[sourceIndex] = puzzle[targetIndex];
@@ -305,7 +317,10 @@
       
     };
 
-    function swapColumn(puzzle, sourceIndex, targetIndex){
+    function swapColumn(puzzle){
+      var sourceIndex = RandomNumberService.GetRandomInt(0,8);
+      var targetIndex = getValidPuzzleTargetSwapIndex(sourceIndex);
+
       for(var j = 0; j < 9; j++){
         var buffer = puzzle[j][sourceIndex];
         puzzle[j][sourceIndex] = puzzle[j][targetIndex];
@@ -314,7 +329,11 @@
     };
 
     this.NewPuzzle = function(seed, difficulty){
-      setSeed(seed);
+      if(seed < 1){
+        seed = Math.floor(RandomNumberService.Random(true) * (65535 - 1)) + 1;
+      };
+
+      RandomNumberService.SetSeed(seed);
 
       initialPuzzle = [
         [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -328,20 +347,17 @@
         [9, 7, 8, 5, 3, 1, 6, 4, 2]
       ];
       
-      var maxGenerations  = getRandomInt(150,500);
+      var maxGenerations  = RandomNumberService.GetRandomInt(400,800);
 
       for(var i = 0; i < maxGenerations; i++){
-        var transformOption = getRandomInt(0,4);
-
-        var sourceIndex = getRandomInt(0,8);
-        var targetIndex = getValidPuzzleTargetSwapIndex(sourceIndex);
+        var transformOption = RandomNumberService.GetRandomInt(0,4);
 
         switch(transformOption){
         case 0 :
-          swapRow(initialPuzzle,sourceIndex, targetIndex);          
+          swapRow(initialPuzzle);          
           break;
         case 1 :
-          swapColumn(initialPuzzle,sourceIndex, targetIndex);          
+          swapColumn(initialPuzzle);          
           break;
         case 2:
           swapBlock(initialPuzzle, true);
@@ -356,7 +372,8 @@
     };
   };
 
-  learningJavascriptApp.service('SudokuPuzzleService', sudokuPuzzleService);
+  learningJavascriptApp.service('RandomNumberservice', randomNumberService);
+  learningJavascriptApp.service('SudokuPuzzleService', ['RandomNumberservice', sudokuPuzzleService]);
   learningJavascriptApp.controller('SudokuCtrl', sudokuController);
 })();
 

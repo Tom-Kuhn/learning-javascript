@@ -1,5 +1,6 @@
 ﻿<div>
     <div class="sudoku-puzzle-area center-block">
+      <h3>Sudoku game #{{puzzleNumber}}</h3>
         <table class="table table-bordered table-nonfluid">
             <tr ng-repeat="row in range(9) track by $index" class="sudoku-row">
                 <td ng-repeat="cell in range(9) track by $index"
