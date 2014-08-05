@@ -28,6 +28,9 @@ body{
 }
 
 .top-buffer { margin-top:20px; }
+.top-buffer-small { margin-top:10px; }
+.bottom-buffer { margin-bottom:20px; }
+.bottom-buffer-small { margin-bottom:10px; }
 
 small, sub, sup { font-size: .6em }
 sub             { vertical-align: sub }
@@ -43,6 +46,11 @@ sup             { vertical-align: super }
     text-align:left;
     /* inline-block space fix */
     margin-right:-4px;
+}
+
+btn .full-width-button{
+    display: block; 
+    width: 100%;
 }
 
 

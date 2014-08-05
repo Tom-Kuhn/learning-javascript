@@ -1,6 +1,6 @@
 (function() {
 
-  function sudokuController($scope, SudokuPuzzleService) {
+  function sudokuController($scope, SudokuPuzzleService, RandomNumberService) {
     // Stores the values entered by the user
     $scope.board = [
       [, , , , , , , , ],
@@ -39,15 +39,94 @@
       [1, , 4, , , , , , ]
     ];
 
-    $scope.puzzleNumber =  Math.floor(Math.random() * (65535 - 1)) + 1;
-
-   // $scope.puzzle = SudokuPuzzleService.NewPuzzle( $scope.puzzleNumber,10);
-
     $scope.hoverColumn = -1;
 
     $scope.selectedCell = null;
 
     $scope.MarkupCells = false;
+
+    $scope.init = function(){
+      // Stores the values entered by the user
+      $scope.board = [
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ]
+      ];
+
+      // Stores up any markup entered by the user
+      $scope.markings = [
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ]
+      ];
+
+      $scope.puzzle = [
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ]
+      ];
+
+      $scope.solution = [
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ]
+      ];
+
+    };
+
+    $scope.NewGame = function(){
+      $scope.init();
+
+      $scope.solution = SudokuPuzzleService.NewGame( -1 );
+
+      $scope.puzzle = SudokuPuzzleService.GeneratePuzzle( $scope.solution, -1, $scope.puzzleDifficulty );
+    };
+
+    $scope.RandomNewGame = function(difficulty){
+
+      var rand = RandomNumberService.GetRandomInt(0,3);
+      var randDifficulty =  SudokuPuzzleService.DifficultyLevel.EASY;
+      
+      switch(rand){
+      case 0:
+        randDifficulty = SudokuPuzzleService.DifficultyLevel.HARD;
+        break;
+      case 1:
+        randDifficulty = SudokuPuzzleService.DifficultyLevel.MEDIUM;
+        break;
+      default:
+        randDifficulty = SudokuPuzzleService.DifficultyLevel.EASY;
+        break;
+      }
+
+      $scope.puzzleDifficulty = difficulty || randDifficulty;
+
+      $scope.NewGame();
+    };
 
     $scope.ToggleCellMarkup = function () {
       $scope.MarkupCells = !$scope.MarkupCells;
@@ -239,6 +318,11 @@
       }
       return false;
     };
+
+
+    // Call this to initialize a new game
+    RandomNumberService.SetSeed(1);
+    $scope.RandomNewGame();
   }
 
   function randomNumberService(){
@@ -277,6 +361,12 @@
   };
 
   function sudokuPuzzleService(RandomNumberService){
+    this.DifficultyLevel = {
+      EASY: "Easy",
+      MEDIUM: "Medium",
+      HARD: "Hard"
+    };
+
     function getValidPuzzleTargetSwapIndex (puzzleSourceIndex){
       var puzzleBlockIndex = puzzleSourceIndex % 3;
       var result = puzzleBlockIndex;
@@ -328,7 +418,7 @@
       };
     };
 
-    this.NewPuzzle = function(seed, difficulty){
+    this.NewGame = function(seed){
       if(seed < 1){
         seed = Math.floor(RandomNumberService.Random(true) * (65535 - 1)) + 1;
       };
@@ -370,11 +460,53 @@
 
       return initialPuzzle;
     };
+
+    this.GeneratePuzzle = function( solution, seed, puzzleDifficulty ){
+      if(seed < 1){
+        seed = Math.floor(RandomNumberService.Random(true) * (65535 - 1)) + 1;
+      };
+
+      RandomNumberService.SetSeed(seed);
+
+      var percentageOfNumbersToKeep = 45;
+
+      if(puzzleDifficulty == this.DifficultyLevel.MEDIUM){
+        percentageOfNumbersToKeep = 35;
+      }
+
+      if(puzzleDifficulty == this.DifficultyLevel.HARD){
+        percentageOfNumbersToKeep = 25;
+      }
+
+      var result = [
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ],
+        [, , , , , , , , ]
+      ];
+
+      for(var i = 0; i < 9 ; i++){
+        for(var j = 0; j < 9; j++){
+          var rand = RandomNumberService.GetRandomInt(1,100);
+          
+          if(rand <= percentageOfNumbersToKeep){
+            result[i][j] = solution[i][j];
+          };
+        };
+      };
+
+      return result;
+    };
   };
 
-  learningJavascriptApp.service('RandomNumberservice', randomNumberService);
-  learningJavascriptApp.service('SudokuPuzzleService', ['RandomNumberservice', sudokuPuzzleService]);
-  learningJavascriptApp.controller('SudokuCtrl', sudokuController);
-})();
+  learningJavascriptApp.service('RandomNumberService', randomNumberService);
+  learningJavascriptApp.service('SudokuPuzzleService', ['RandomNumberService', sudokuPuzzleService]);
+  learningJavascriptApp.controller('SudokuCtrl', [ '$scope', 'SudokuPuzzleService', 'RandomNumberService',  sudokuController]);
+ })();
 
 
