@@ -57,6 +57,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\Services\RandomNumberService.js" />
+    <Content Include="app\ShapePacking\ShapePacking.html" />
+    <Content Include="app\ShapePacking\ShapePacking.js" />
     <Content Include="app\Sudoku\sudoku-test.html" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">

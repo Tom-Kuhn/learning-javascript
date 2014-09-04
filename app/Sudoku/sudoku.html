@@ -1,127 +1,131 @@
-﻿<div>
-  <div class="row-centered">
-    <h1>Sudoku</h1>  
-  </div>
+﻿<div class="container">
+    <div>
+        <div class="row-centered">
+            <h1>Sudoku</h1>
+        </div>
+        <div>
+            <p>
+                <strong>Rules:</strong><br />
+                The objective is to fill a 9×9 grid with digits so that each
+                column, each row, and each of the nine 3×3 sub-grids that
+                compose the grid contains all of the digits from 1 to 9. (<a href="http://en.wikipedia.org/wiki/Sudoku">Wikipedia</a>)
+            </p>
+            <p>
+                <strong>How to play:</strong><br />
+                To enter numbers into the puzzle board below, simply select the
+                cell you want to edit and then type the number (1-9 inclusive)
+                that you want to place. Alternatively, you can use the numbered
+                buttons provided below the board to enter the desired value. To
+                remove a number, simply click on the red cross button or press the
+                <span class="badge">Delete</span> key or the  <span class="badge">Backspace</span> key.
+            </p>
+        </div>
+        <div class="row-centered">
+            <div class="row">
+                <div class="col-md-2 col-sm-12 col-md-offset-2 ">
+                    <div class="btn btn-success full-width-button top-buffer-small"
+                         ng-click="RandomNewGame('Easy')">
+                        New Easy
+                        game
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12">
+                    <div class="btn btn-warning full-width-button top-buffer-small"
+                         ng-click="RandomNewGame('Medium')">
+                        New Medium
+                        game
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12">
+                    <div class="btn btn-danger full-width-button top-buffer-small"
+                         ng-click="RandomNewGame('Hard')">
+                        New Hard
+                        game
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12 full-width-button top-buffer-small">
+                    <div class="btn btn-primary" ng-click="RandomNewGame()">
+                        Random new
+                        game
+                    </div>
+                </div>
+            </div>
 
-  <div>
-    <p>
-      <strong>Rules:</strong><br />
-      The objective is to fill a 9×9 grid with digits so that each
-      column, each row, and each of the nine 3×3 sub-grids that 
-      compose the grid contains all of the digits from 1 to 9. (<a
-        href="http://en.wikipedia.org/wiki/Sudoku">Wikipedia</a>)
-    </p>
-
-    <p>
-      <strong>How to play:</strong><br />
-      To enter numbers into the puzzle board below, simply select the
-      cell you want to edit and then type the number (1-9 inclusive)
-      that you want to place. Alternatively, you can use the numbered
-      buttons provided below the board to enter the desired value. To
-      remove a number, simply click on the red cross button or press the
-      <span class="badge">Delete</span> key or the  <span class="badge">Backspace</span> key.
-    </p>
-  </div>
-
-  <div class="row-centered">
-    <div class="row">
-      <div class="col-md-2 col-sm-12 col-md-offset-2 ">
-        <div class="btn btn-success full-width-button top-buffer-small"
-             ng-click="RandomNewGame('Easy')">New Easy
-          game</div>
-      </div>
-      <div class="col-md-2 col-sm-12">
-        <div class="btn btn-warning full-width-button top-buffer-small"
-             ng-click="RandomNewGame('Medium')">New Medium
-          game</div>
-      </div>
-      <div class="col-md-2 col-sm-12">
-        <div class="btn btn-danger full-width-button top-buffer-small"
-             ng-click="RandomNewGame('Hard')">New Hard
-          game</div>
-      </div>
-      <div class="col-md-2 col-sm-12 full-width-button top-buffer-small">
-        <div class="btn btn-primary" ng-click="RandomNewGame()">Random new
-          game</div>
-      </div>
-    </div>
-    
-    <p class="top-buffer-small">
-      Current difficulty: {{puzzleDifficulty}}
-    </p>
-  </div>
-
-  <div class="sudoku-puzzle-area center-block">    
-    <table class="table table-bordered table-nonfluid">
-      <tr ng-repeat="row in range(9) track by $index" class="sudoku-row">
-        <td ng-repeat="cell in range(9) track by $index"
-            tabindex="0"
-            class="sudoku-cell"
-            ng-click="setSelectedCell($parent.$index, $index)"
-          ng-keypress="handleKeyboardEntry($event)"
-          ng-keydown="handleKeyboardKeyDown($event)"
-          ng-class="{'sudoku-column-highlight':isColumnSelected($index),
+            <p class="top-buffer-small">
+                Current difficulty: {{puzzleDifficulty}}
+            </p>
+        </div>
+        <div class="sudoku-puzzle-area center-block">
+            <table class="table table-bordered table-nonfluid">
+                <tr ng-repeat="row in range(9) track by $index" class="sudoku-row">
+                    <td ng-repeat="cell in range(9) track by $index"
+                        tabindex="0"
+                        class="sudoku-cell"
+                        ng-click="setSelectedCell($parent.$index, $index)"
+                        ng-keypress="handleKeyboardEntry($event)"
+                        ng-keydown="handleKeyboardKeyDown($event)"
+                        ng-class="{'sudoku-column-highlight':isColumnSelected($index),
 		    'sudoku-block':isCellShaded({{$parent.$index}}, {{$index}}),
                     'sudoku-selected-cell':isCellSelected({{$parent.$index}}, {{$index}})}"
-          ng-mouseover="setHoverColumn($index)"
-          ng-mouseleave="setHoverColumn(-1)">
-        <div ng-class="{'sudoku-puzzle-cell': isPuzzleNumber({{$parent.$index}}, {{$index}}), 'sudoku-markings':isMarkingNumber({{$parent.$index}}, {{$index}}),}">{{getBoardValue($parent.$index,$index)}}</div>
-      </td>
-    </tr>
-  </table>
-</div>
-
-<div class="panel panel-success" ng-if="completed">
-  <div class="panel-heading">
-    <h3 class="panel-title">Congratulations!</h3>
-  </div>
-  <div class="panel-body">
-    You've successfully completed this puzzle in
-  {{completionTimeMinutes}} minute(s)! Would you like to play again?
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-1 col-xs-offset-1">
-    <div class="btn btn-primary" ng-click="SetSelectedCellValue(1)"><strong>1</strong></div>
-  </div>
-        <div class="col-xs-1">
-            <div class="btn btn-primary" ng-click="SetSelectedCellValue(2)"><strong>2</strong></div>
+                        ng-mouseover="setHoverColumn($index)"
+                        ng-mouseleave="setHoverColumn(-1)">
+                        <div ng-class="{'sudoku-puzzle-cell': isPuzzleNumber({{$parent.$index}}, {{$index}}), 'sudoku-markings':isMarkingNumber({{$parent.$index}}, {{$index}}),}">{{getBoardValue($parent.$index,$index)}}</div>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="col-xs-1">
-            <div class="btn btn-primary" ng-click="SetSelectedCellValue(3)"><strong>3</strong></div>
+        <div class="panel panel-success" ng-if="completed">
+            <div class="panel-heading">
+                <h3 class="panel-title">Congratulations!</h3>
+            </div>
+            <div class="panel-body">
+                You've successfully completed this puzzle in
+                {{completionTimeMinutes}} minute(s)! Would you like to play again?
+            </div>
         </div>
-        <div class="col-xs-1">
-            <div class="btn btn-primary" ng-click="SetSelectedCellValue(4)"><strong>4</strong></div>
+        <div class="row">
+            <div class="col-xs-1 col-xs-offset-1">
+                <div class="btn btn-primary" ng-click="SetSelectedCellValue(1)"><strong>1</strong></div>
+            </div>
+            <div class="col-xs-1">
+                <div class="btn btn-primary" ng-click="SetSelectedCellValue(2)"><strong>2</strong></div>
+            </div>
+            <div class="col-xs-1">
+                <div class="btn btn-primary" ng-click="SetSelectedCellValue(3)"><strong>3</strong></div>
+            </div>
+            <div class="col-xs-1">
+                <div class="btn btn-primary" ng-click="SetSelectedCellValue(4)"><strong>4</strong></div>
+            </div>
+            <div class="col-xs-1">
+                <div class="btn btn-primary" ng-click="SetSelectedCellValue(5)"><strong>5</strong></div>
+            </div>
+            <div class="col-xs-1">
+                <div class="btn btn-primary" ng-click="SetSelectedCellValue(6)"><strong>6</strong></div>
+            </div>
+            <div class="col-xs-1">
+                <div class="btn btn-primary" ng-click="SetSelectedCellValue(7)"><strong>7</strong></div>
+            </div>
+            <div class="col-xs-1">
+                <div class="btn btn-primary" ng-click="SetSelectedCellValue(8)"><strong>8</strong></div>
+            </div>
+            <div class="col-xs-1">
+                <div class="btn btn-primary" ng-click="SetSelectedCellValue(9)"><strong>9</strong></div>
+            </div>
+            <div class="col-xs-1">
+                <div class="btn btn-danger" ng-click="SetSelectedCellValue(null)"><i class="fa fa-times"></i></div>
+            </div>
         </div>
-        <div class="col-xs-1">
-            <div class="btn btn-primary" ng-click="SetSelectedCellValue(5)"><strong>5</strong></div>
+        <div class="row top-buffer">
+            <div class="col-xs-2 col-xs-offset-1">
+                <div class="btn btn-primary" ng-click="ToggleCellMarkup()" ng-class="{'btn-success active':MarkupCells}"><i class="fa fa-pencil" ng-if="MarkupCells"></i> Markup cells</div>
+            </div>
+            <div class="col-xs-2 col-xs-offset-7">
+                <div class="btn btn-primary" ng-click="AddHint()">
+                    <i class="fa fa-question"></i> Need a Hint
+                </div>
+            </div>
         </div>
-        <div class="col-xs-1">
-            <div class="btn btn-primary" ng-click="SetSelectedCellValue(6)"><strong>6</strong></div>
-        </div>
-        <div class="col-xs-1">
-            <div class="btn btn-primary" ng-click="SetSelectedCellValue(7)"><strong>7</strong></div>
-        </div>
-        <div class="col-xs-1">
-            <div class="btn btn-primary" ng-click="SetSelectedCellValue(8)"><strong>8</strong></div>
-        </div>
-        <div class="col-xs-1">
-            <div class="btn btn-primary" ng-click="SetSelectedCellValue(9)"><strong>9</strong></div>
-        </div>
-        <div class="col-xs-1">
-            <div class="btn btn-danger" ng-click="SetSelectedCellValue(null)"><i class="fa fa-times"></i></div>
-        </div>
+        <hr />
+        <h5><a href="#/sudoku/test">Unit tests for the Sudoku example</a></h5>
     </div>
-    <div class="row top-buffer">
-      <div class="col-xs-2 col-xs-offset-1">
-        <div class="btn btn-primary" ng-click="ToggleCellMarkup()" ng-class="{'btn-success active':MarkupCells}"><i class="fa fa-pencil" ng-if="MarkupCells"></i> Markup cells</div>
-      </div>
-      <div class="col-xs-2 col-xs-offset-7">
-        <div class="btn btn-primary" ng-click="AddHint()"><i
-          class="fa fa-question"></i> Need a Hint</div>
-      </div>
-    </div>
-    <hr />
-    <h5><a href="#/sudoku/test">Unit tests for the Sudoku example</a></h5>
 </div>

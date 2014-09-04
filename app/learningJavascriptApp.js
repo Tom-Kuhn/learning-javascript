@@ -15,6 +15,12 @@ learningJavascriptApp.config(function ($routeProvider) {
         caseInsensitiveMatch: true
     })
 
+    .when('/ShapePacking', {
+        templateUrl: 'app/ShapePacking/ShapePacking.html',
+        controller: 'ShapePackingCtrl',
+        caseInsensitiveMatch: true
+    })
+
     .when('/Sudoku/Test', {
         templateUrl: 'app/Sudoku/sudoku-test.html',
         controller: 'SudokuTestCtrl',
